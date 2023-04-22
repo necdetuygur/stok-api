@@ -20,7 +20,7 @@ const Kayit = async (Ad, Soyad, Telefon, KullaniciAdi, Sifre) => {
         }),
       })
     ).json()
-  ).token;
+  ).Token;
 };
 await Kayit("b", "b", "b", "b", "b");
 
@@ -38,7 +38,7 @@ const Giris = async (KullaniciAdi, Sifre) => {
         }),
       })
     ).json()
-  ).token;
+  ).Token;
 };
 await Giris("b", "b");
 
@@ -62,3 +62,32 @@ await StokEkle(await Giris("b", "b"), "b", "b", "b");
 
 const Stoklar = async () => await (await fetch(STOK_URL)).json();
 await Stoklar();
+
+/* Kullanıcılar */
+const ENDPOINT = "http://localhost:3000";
+const GIRIS_URL = ENDPOINT + "/kullanici/giris";
+const Giris = async (KullaniciAdi, Sifre) => {
+  return (
+    await (
+      await fetch(GIRIS_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          KullaniciAdi,
+          Sifre,
+        }),
+      })
+    ).json()
+  ).Token;
+};
+await (
+  await fetch("/kullanici", {
+    headers: {
+      Authorization: await Giris("a", "a"),
+      "Content-Type": "application/json",
+    },
+  })
+).json();
+/* Kullanıcılar */

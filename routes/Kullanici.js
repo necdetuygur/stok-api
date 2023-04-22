@@ -1,5 +1,5 @@
 const bcrypt = require("bcrypt");
-const { jwt, SECRET_KEY } = require("../auth");
+const { jwt, SECRET_KEY, authorize } = require("../auth");
 const db = require("../db");
 
 const express = require("express");
@@ -117,6 +117,17 @@ router.get("/yonetici-yap/:KullaniciAdi", (req, res) => {
     }
 
     res.sendStatus(204);
+  });
+});
+
+router.get("/", authorize(["Yonetici"]), (req, res) => {
+  const query = `SELECT * FROM Kullanici`;
+  db.all(query, (err, Kullanicis) => {
+    if (err) {
+      console.error(err.message);
+      return res.status(500).send("Server error");
+    }
+    res.json(Kullanicis);
   });
 });
 
