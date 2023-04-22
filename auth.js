@@ -13,7 +13,7 @@ function authorize(Roller = []) {
       const query = `SELECT * FROM Kullanici WHERE KullaniciAdi = ?`;
       db.get(query, [decodedToken.KullaniciAdi], async (err, Kullanici) => {
         if (Roller.length && !Roller.includes(Kullanici.Rol)) {
-          return res.status(403).send("Forbidden");
+          return res.status(403).send("Yasak");
         }
         req.Kullanici = Kullanici;
         next();
