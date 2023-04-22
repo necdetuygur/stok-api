@@ -60,14 +60,5 @@ const StokEkle = async (token, Ad, Miktar, Birim) => {
 };
 await StokEkle(await Giris("b", "b"), "b", "b", "b");
 
-const Stoklar = async (token) => {
-  return await (
-    await fetch(STOK_URL, {
-      method: "GET",
-      headers: {
-        Authorization: token,
-      },
-    })
-  ).json();
-};
-await Stoklar(await Giris("b", "b"));
+const Stoklar = async () => await (await fetch(STOK_URL)).json();
+await Stoklar();
