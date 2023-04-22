@@ -17,7 +17,7 @@ db.run(`CREATE TABLE IF NOT EXISTS Kullanici (
 
 router.post("/kayit", (req, res) => {
   try {
-    const { Ad, Soyad, Telefon, KullaniciAdi, Sifre } = req.body;
+    let { Ad, Soyad, Telefon, KullaniciAdi, Sifre } = req.body;
 
     db.get(
       "SELECT * FROM Kullanici WHERE KullaniciAdi = ?",
@@ -26,6 +26,9 @@ router.post("/kayit", (req, res) => {
         if (row) {
           return res.status(400).json({ msg: "Kullanıcı mevcut" });
         }
+
+        Ad = ucwords(Ad);
+        Soyad = ucwords(Soyad);
 
         const salt = await bcrypt.genSalt(10);
         const hashedSifre = await bcrypt.hash(Sifre, salt);
@@ -38,10 +41,17 @@ router.post("/kayit", (req, res) => {
               return res.status(500).send("Server error");
             }
 
-            const token = jwt.sign({ KullaniciAdi: KullaniciAdi }, SECRET_KEY, {
+            const Token = jwt.sign({ KullaniciAdi: KullaniciAdi }, SECRET_KEY, {
               expiresIn: "24h",
             });
-            res.json({ token });
+            res.json({
+              Token,
+              Ad,
+              Soyad,
+              Telefon,
+              KullaniciAdi,
+              Rol: "Kullanici",
+            });
           }
         );
       }
@@ -72,7 +82,7 @@ router.post("/giris", (req, res) => {
       return res.status(400).json({ msg: "Geçersiz kullanıcı bilgileri" });
     }
 
-    const token = jwt.sign(
+    const Token = jwt.sign(
       { KullaniciAdi: Kullanici.KullaniciAdi },
       SECRET_KEY,
       {
@@ -80,8 +90,46 @@ router.post("/giris", (req, res) => {
       }
     );
 
-    res.json({ token });
+    res.json({
+      Token,
+      Ad: Kullanici.Ad,
+      Soyad: Kullanici.Soyad,
+      Telefon: Kullanici.Telefon,
+      KullaniciAdi: Kullanici.KullaniciAdi,
+      Rol: Kullanici.Rol,
+    });
   });
 });
+
+router.get("/yonetici-yap/:KullaniciAdi", (req, res) => {
+  const { KullaniciAdi } = req.params;
+
+  const query = `UPDATE Kullanici SET Rol = ? WHERE KullaniciAdi = ?`;
+
+  db.run(query, ["Yonetici", KullaniciAdi], function (err) {
+    if (err) {
+      console.error(err.message);
+      return res.status(500).send("Server error");
+    }
+
+    if (this.changes === 0) {
+      return res.status(404).send("Kullanıcı bulunamadı");
+    }
+
+    res.sendStatus(204);
+  });
+});
+
+function ucwords(str) {
+  strVal = "";
+  str = str.toLocaleLowerCase().split(" ");
+  for (let chr = 0; chr < str.length; chr++) {
+    strVal +=
+      str[chr].substring(0, 1).toLocaleUpperCase() +
+      str[chr].substring(1, str[chr].length) +
+      " ";
+  }
+  return strVal;
+}
 
 module.exports = router;
