@@ -120,6 +120,25 @@ router.get("/yonetici-yap/:KullaniciAdi", (req, res) => {
   });
 });
 
+router.get("/kullanici-yap/:KullaniciAdi", (req, res) => {
+  const { KullaniciAdi } = req.params;
+
+  const query = `UPDATE Kullanici SET Rol = ? WHERE KullaniciAdi = ?`;
+
+  db.run(query, ["Kullanici", KullaniciAdi], function (err) {
+    if (err) {
+      console.error(err.message);
+      return res.status(500).send("Server error");
+    }
+
+    if (this.changes === 0) {
+      return res.status(404).send("Kullanıcı bulunamadı");
+    }
+
+    res.sendStatus(204);
+  });
+});
+
 router.get("/", authorize(["Yonetici"]), (req, res) => {
   const query = `SELECT * FROM Kullanici`;
   db.all(query, (err, Kullanicis) => {
