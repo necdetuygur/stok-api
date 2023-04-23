@@ -2,6 +2,8 @@ const bcrypt = require("bcrypt");
 const { jwt, SECRET_KEY, authorize } = require("../auth");
 const db = require("../db");
 
+const { faker } = require("@faker-js/faker/locale/tr");
+
 const express = require("express");
 const router = express.Router();
 
@@ -14,6 +16,33 @@ db.run(`CREATE TABLE IF NOT EXISTS Kullanici (
   Sifre TEXT NOT NULL,
   Rol TEXT NOT NULL
 )`);
+
+router.get("/seed", (req, res) => {
+  let i = 10;
+  while (i--) {
+    (async () => {
+      const Ad = faker.name.firstName();
+      const Soyad = faker.name.lastName();
+      const Telefon = faker.phone.number();
+      const KullaniciAdi = (Ad + "" + Soyad).toLowerCase();
+      const Sifre = "123456";
+
+      const salt = await bcrypt.genSalt(10);
+      const hashedSifre = await bcrypt.hash(Sifre, salt);
+
+      db.run(
+        "INSERT INTO Kullanici (Ad, Soyad, Telefon, KullaniciAdi, Sifre, Rol) VALUES (?, ?, ?, ?, ?, ?)",
+        [Ad, Soyad, Telefon, KullaniciAdi, hashedSifre, "Kullanici"],
+        function (err) {
+          if (err) {
+            return res.status(500).send("Server error");
+          }
+        }
+      );
+    })();
+  }
+  return res.status(201).send("OK");
+});
 
 router.post("/kayit", (req, res) => {
   try {

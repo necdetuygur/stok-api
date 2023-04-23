@@ -3,6 +3,8 @@ const { authorize } = require("../auth");
 const express = require("express");
 const router = express.Router();
 
+const { faker } = require("@faker-js/faker/locale/tr");
+
 db.run(`CREATE TABLE IF NOT EXISTS Stok (
   StokID INTEGER PRIMARY KEY AUTOINCREMENT,
   KullaniciID INTEGER NOT NULL,
@@ -22,6 +24,71 @@ router.get("/", (req, res) => {
       return res.status(500).send("Server error");
     }
     res.json(Stoks);
+  });
+});
+
+router.get("/seed", (req, res) => {
+  let i = 10;
+  while (i--) {
+    const Kod = faker.database.mongodbObjectId();
+    const Grup = faker.commerce.department();
+    const Ad = faker.commerce.product();
+    const Miktar = faker.commerce.price();
+    const Fiyat = faker.commerce.price();
+    const Birim = faker.commerce.productMaterial();
+
+    const query = `INSERT INTO Stok (KullaniciID, Kod, Grup, Ad, Miktar, Fiyat, Birim) VALUES (?, ?, ?, ?, ?, ?, ?)`;
+    db.run(query, [1, Kod, Grup, Ad, Miktar, Fiyat, Birim], function (err) {
+      if (err) {
+        console.error(err.message);
+        return res.status(500).send("Server error");
+      }
+    });
+  }
+  return res.status(201).send("OK");
+});
+
+router.get("/ad", (req, res) => {
+  const query = `SELECT Ad FROM Stok GROUP BY Ad ORDER BY Ad ASC`;
+  db.all(query, (err, Stoks) => {
+    if (err) {
+      console.error(err.message);
+      return res.status(500).send("Server error");
+    }
+    res.json(Stoks.map((x) => x.Ad));
+  });
+});
+
+router.get("/kod", (req, res) => {
+  const query = `SELECT Kod FROM Stok GROUP BY Kod ORDER BY Kod ASC`;
+  db.all(query, (err, Stoks) => {
+    if (err) {
+      console.error(err.message);
+      return res.status(500).send("Server error");
+    }
+    res.json(Stoks.map((x) => x.Kod));
+  });
+});
+
+router.get("/birim", (req, res) => {
+  const query = `SELECT Birim FROM Stok GROUP BY Birim ORDER BY Birim ASC`;
+  db.all(query, (err, Stoks) => {
+    if (err) {
+      console.error(err.message);
+      return res.status(500).send("Server error");
+    }
+    res.json(Stoks.map((x) => x.Birim));
+  });
+});
+
+router.get("/grup", (req, res) => {
+  const query = `SELECT Grup FROM Stok GROUP BY Grup ORDER BY Grup ASC`;
+  db.all(query, (err, Stoks) => {
+    if (err) {
+      console.error(err.message);
+      return res.status(500).send("Server error");
+    }
+    res.json(Stoks.map((x) => x.Grup));
   });
 });
 
