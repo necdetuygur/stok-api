@@ -10,7 +10,7 @@ db.run(`CREATE TABLE IF NOT EXISTS Kullanici (
   Ad TEXT NOT NULL,
   Soyad TEXT NOT NULL,
   Telefon TEXT NULL,
-  KullaniciAdi TEXT NOT NULL,
+  KullaniciAdi TEXT UNIQUE NOT NULL,
   Sifre TEXT NOT NULL,
   Rol TEXT NOT NULL
 )`);
