@@ -53,7 +53,7 @@ router.post("/kayit", (req, res) => {
       [KullaniciAdi],
       async function (err, row) {
         if (row) {
-          return res.status(400).json({ msg: "Kullanıcı mevcut" });
+          return res.status(400).send("Kullanıcı mevcut");
         }
 
         Ad = ucwords(Ad);
@@ -108,7 +108,7 @@ router.post("/giris", (req, res) => {
 
     const isMatch = await bcrypt.compare(Sifre, Kullanici.Sifre);
     if (!isMatch) {
-      return res.status(400).json({ msg: "Geçersiz kullanıcı bilgileri" });
+      return res.status(400).send("Geçersiz kullanıcı bilgileri");
     }
 
     const Token = jwt.sign(
