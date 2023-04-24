@@ -23,7 +23,7 @@ router.get("/seed", (req, res) => {
     (async () => {
       const Ad = faker.name.firstName();
       const Soyad = faker.name.lastName();
-      const Telefon = faker.phone.number();
+      const Telefon = "(555) 555-5555";
       const KullaniciAdi = (Ad + "" + Soyad).toLowerCase();
       const Sifre = "123456";
 
@@ -170,12 +170,12 @@ router.get("/kullanici-yap/:KullaniciAdi", (req, res) => {
 
 router.get("/", authorize(["Yonetici"]), (req, res) => {
   const query = `SELECT * FROM Kullanici`;
-  db.all(query, (err, Kullanicis) => {
+  db.all(query, (err, rows) => {
     if (err) {
       console.error(err.message);
       return res.status(500).send("Server error");
     }
-    res.json(Kullanicis);
+    res.json(rows);
   });
 });
 
@@ -190,5 +190,23 @@ function ucwords(str) {
   }
   return strVal;
 }
+
+router.get("/:KullaniciID", (req, res) => {
+  const { KullaniciID } = req.params;
+  db.get(
+    "SELECT * FROM Kullanici WHERE KullaniciID = ?",
+    [KullaniciID],
+    async function (err, row) {
+      if (err) {
+        console.error(err.message);
+        return res.status(500).send("Server error");
+      }
+      res.json({
+        Ad: row.Ad,
+        Soyad: row.Soyad,
+      });
+    }
+  );
+});
 
 module.exports = router;
