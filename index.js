@@ -28,11 +28,15 @@ app.use("/stok-log", StokLogRoutes);
 app.listen(port, () => {
   console.log("___");
   Object.keys(networkInterfaces).forEach((x) => {
-    console.log(`http://${networkInterfaces[x][1].address}:${port}`);
+    networkInterfaces[x].forEach((t) => {
+      console.log(`http://${t.address}:${port}`);
+    });
   });
   console.log("___");
   Object.keys(networkInterfaces).forEach((x) => {
-    console.log(`https://${networkInterfaces[x][1].address}:${port}`);
+    networkInterfaces[x].forEach((t) => {
+      console.log(`https://${t.address}:${port}`);
+    });
   });
   console.log("___");
 });
