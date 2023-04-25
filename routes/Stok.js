@@ -35,7 +35,7 @@ router.get("/seed", (req, res) => {
     const Ad = faker.commerce.product();
     const Miktar = faker.commerce.price();
     const Fiyat = faker.commerce.price();
-    const Birim = faker.commerce.productMaterial();
+    const Birim = i % 2 ? "Metre" : "Kilo";
 
     const query = `INSERT INTO Stok (KullaniciID, Kod, Grup, Ad, Miktar, Fiyat, Birim) VALUES (?, ?, ?, ?, ?, ?, ?)`;
     db.run(query, [1, Kod, Grup, Ad, Miktar, Fiyat, Birim], function (err) {
