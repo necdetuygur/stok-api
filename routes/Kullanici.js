@@ -17,6 +17,29 @@ db.run(`CREATE TABLE IF NOT EXISTS Kullanici (
   Rol TEXT NOT NULL
 )`);
 
+try {
+  db.get(
+    "SELECT * FROM Kullanici WHERE KullaniciAdi = ?",
+    ["test"],
+    async function (err, row) {
+      if (row) {
+        console.log("Kullanıcı mevcut");
+      }
+      const salt = await bcrypt.genSalt(10);
+      const hashedSifre = await bcrypt.hash("123456", salt);
+      db.run(
+        "INSERT INTO Kullanici (Ad, Soyad, Telefon, KullaniciAdi, Sifre, Rol) VALUES (?, ?, ?, ?, ?, ?)",
+        ["Test", "Kullanıcı", "(555) 555-5555", "test", hashedSifre, "Yonetici"],
+        function (err) {
+          if (err) {
+            console.log("Server error");
+          }
+        }
+      );
+    }
+  );
+} catch(error) {}
+
 router.get("/seed", (req, res) => {
   let i = 10;
   while (i--) {
