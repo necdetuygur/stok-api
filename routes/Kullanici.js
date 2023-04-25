@@ -24,6 +24,7 @@ try {
     async function (err, row) {
       if (row) {
         console.log("Kullanıcı mevcut");
+        return;
       }
       const salt = await bcrypt.genSalt(10);
       const hashedSifre = await bcrypt.hash("123456", salt);
