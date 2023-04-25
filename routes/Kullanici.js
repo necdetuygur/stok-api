@@ -29,7 +29,14 @@ try {
       const hashedSifre = await bcrypt.hash("123456", salt);
       db.run(
         "INSERT INTO Kullanici (Ad, Soyad, Telefon, KullaniciAdi, Sifre, Rol) VALUES (?, ?, ?, ?, ?, ?)",
-        ["Test", "Kullanıcı", "(555) 555-5555", "test", hashedSifre, "Yonetici"],
+        [
+          "Test",
+          "Kullanıcı",
+          "(555) 555-5555",
+          "test",
+          hashedSifre,
+          "Yonetici",
+        ],
         function (err) {
           if (err) {
             console.log("Server error");
@@ -38,7 +45,7 @@ try {
       );
     }
   );
-} catch(error) {}
+} catch (error) {}
 
 router.get("/seed", (req, res) => {
   let i = 10;

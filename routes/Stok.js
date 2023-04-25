@@ -30,7 +30,7 @@ router.get("/", (req, res) => {
 router.get("/seed", (req, res) => {
   let i = 10;
   while (i--) {
-    const Kod = faker.database.mongodbObjectId();
+    const Kod = faker.database.mongodbObjectId().substring(0, 8);
     const Grup = faker.commerce.department();
     const Ad = faker.commerce.product();
     const Miktar = faker.commerce.price();
