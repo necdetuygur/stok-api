@@ -23,7 +23,7 @@ try {
     ["test"],
     async function (err, row) {
       if (row) {
-        console.log("Kullanıcı mevcut");
+        console.log("kullanici test seed OK");
         return;
       }
       const salt = await bcrypt.genSalt(10);
