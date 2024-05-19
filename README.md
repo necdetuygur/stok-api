@@ -20,6 +20,12 @@ http://localhost:3000/stok/seed
 
 http://localhost:3000/kullanici/yonetici-yap/KullaniciAdi
 
+### Docker
+```sh
+docker build . -t stok-api
+docker run --name stok-api1 --mount type=bind,source="$(pwd)",target=/home/node/app -p 8080:3000 -d stok-api
+```
+
 ### Örnek Kullanıcı:
 
 ```
