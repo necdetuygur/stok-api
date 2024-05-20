@@ -26,7 +26,7 @@ docker build . -t stok-api
 docker run --name stok-api1 --mount type=bind,source="$(pwd)",target=/home/node/app -p 3000:3000 -d stok-api
 ```
 
-### Docker Windows PowerShell
+### Docker Windows PowerShell (Development Environment)
 [https://youtu.be/hecm__zAWlc](https://youtu.be/hecm__zAWlc)
 ```sh
 docker stop stok-api1
