@@ -27,6 +27,7 @@ docker run --name stok-api1 --mount type=bind,source="$(pwd)",target=/home/node/
 ```
 
 ### Docker Windows PowerShell
+[https://youtu.be/hecm__zAWlc](https://youtu.be/hecm__zAWlc)
 ```sh
 docker stop stok-api1
 docker rm stok-api1
